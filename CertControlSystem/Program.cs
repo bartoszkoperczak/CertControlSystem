@@ -1,4 +1,12 @@
+using CertControlSystem.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Dodaj to:
+builder.Services.AddDbContext<CertDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CertDbContext") 
+        ?? "Server=DESKTOP-3U0S9C4\\SQLEXPRESS;Database=CertDB;Trusted_Connection=True;TrustServerCertificate=True;"));
 
 // Add services to the container.
 builder.Services.AddRazorPages();

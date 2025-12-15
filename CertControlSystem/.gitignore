@@ -1,0 +1,91 @@
+.gitignore CertControlSystem\.gitignore
+# Visual Studio
+.vs/
+.vscode/
+bin/
+obj/
+out/
+.vs
+*.user
+*.suo
+*.sln.docstates
+*.userprefs
+
+# Visual Studio Build Results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Rider
+.idea/
+*.sln.iml
+
+# ReSharper
+_ReSharper*/
+*.resharper
+*.resharper.user
+*.DotSettings.user
+
+# .NET
+*.dll
+*.exe
+*.pdb
+*.nupkg
+*.snupkg
+.packages/
+packages/
+.dotnet/
+.nuget/
+
+# Entity Framework
+Migrations/
+
+# Local database files
+*.db
+*.mdf
+*.ldf
+*.ndf
+
+# User-specific files
+appsettings.Development.json
+appsettings.Local.json
+*.log
+
+# Build folders
+publish/
+PublishProfiles/
+
+# Runtime
+obj/
+bin/
+
+# Node modules (if applicable)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Azure
+.azure/
+
+# Test Results
+TestResults/
+*.trx

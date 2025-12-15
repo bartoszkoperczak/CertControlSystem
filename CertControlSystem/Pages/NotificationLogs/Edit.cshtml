@@ -1,0 +1,56 @@
+﻿@page
+@model CertControlSystem.Pages.NotificationLogs.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Pages/NotificationLogs/";
+}
+
+<h1>Edit</h1>
+
+<h4>NotificationLog</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="NotificationLog.Id" />
+            <div class="form-group">
+                <label asp-for="NotificationLog.CertificateId" class="control-label"></label>
+                <select asp-for="NotificationLog.CertificateId" class="form-control" asp-items="ViewBag.CertificateId" ></select>
+                <span asp-validation-for="NotificationLog.CertificateId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NotificationLog.Channel" class="control-label"></label>
+                <input asp-for="NotificationLog.Channel" class="form-control" />
+                <span asp-validation-for="NotificationLog.Channel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NotificationLog.SentDate" class="control-label"></label>
+                <input asp-for="NotificationLog.SentDate" class="form-control" />
+                <span asp-validation-for="NotificationLog.SentDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NotificationLog.MessageContent" class="control-label"></label>
+                <input asp-for="NotificationLog.MessageContent" class="form-control" />
+                <span asp-validation-for="NotificationLog.MessageContent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NotificationLog.Status" class="control-label"></label>
+                <input asp-for="NotificationLog.Status" class="form-control" />
+                <span asp-validation-for="NotificationLog.Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
