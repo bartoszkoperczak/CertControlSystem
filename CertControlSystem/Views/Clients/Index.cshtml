@@ -1,0 +1,88 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<CertControlSystem.Models.Client>
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    ViewData["Title"] = "Baza Klientów";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-0 text-gray-800">Klienci</h1>
+        <p class="text-muted small">Baza danych osób i firm obsługiwanych przez system.</p>
+    </div>
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="bi bi-person-plus-fill me-2"></i>Dodaj Klienta
+        </a>
+    }
+</div>
+
+<div class="card card-modern p-0 overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="bg-light">
+                <tr>
+                    <th class="ps-4">Imię i Nazwisko</th>
+                    <th>Email</th>
+                    <th>Telefon</th>
+                    <th>Data Utworzenia</th>
+                    <th class="text-end pe-4">Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                    <span class="fw-bold">@item.FirstName.Substring(0, 1)@item.LastName.Substring(0, 1)</span>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark">@item.FirstName @item.LastName</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="mailto:@item.Email" class="text-decoration-none text-muted">
+                                <i class="bi bi-envelope me-1"></i> @item.Email
+                            </a>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.PhoneNumber))
+                            {
+                                <span class="text-muted"><i class="bi bi-telephone me-1"></i> @item.PhoneNumber</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td class="text-muted small">
+                            <i class="bi bi-calendar3 me-1"></i> @item.CreatedAt.ToString("dd.MM.yyyy")
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-light btn-icon text-primary" title="Szczegóły">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-light btn-icon text-warning" title="Edytuj">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-light btn-icon text-danger" title="Usuń">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

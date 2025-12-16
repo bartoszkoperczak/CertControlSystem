@@ -1,0 +1,52 @@
+﻿@model CertControlSystem.Models.Certificate
+
+@{
+    ViewData["Title"] = "Usuń Certyfikat";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card card-modern shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="bi bi-file-earmark-x-fill me-2"></i>Potwierdź usunięcie certyfikatu</h4>
+            </div>
+            <div class="card-body p-4">
+
+                <div class="text-center mb-4">
+                    <h5 class="text-danger">Czy na pewno chcesz usunąć ten dokument?</h5>
+                </div>
+
+                <div class="list-group mb-4 shadow-sm">
+                    <div class="list-group-item d-flex justify-content-between align-items-center bg-light">
+                        <span class="text-muted">Klient:</span>
+                        <span class="fw-bold text-dark">@Model.Client.FirstName @Model.Client.LastName</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Typ certyfikatu:</span>
+                        <span class="fw-bold text-primary">@Model.Type.Name</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Data wystawienia:</span>
+                        <span>@Model.IssueDate.ToString("dd.MM.yyyy")</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Data ważności:</span>
+                        <span class="@(Model.ExpirationDate < DateOnly.FromDateTime(DateTime.Now) ? "text-danger fw-bold" : "")">
+                            @Model.ExpirationDate.ToString("dd.MM.yyyy")
+                        </span>
+                    </div>
+                </div>
+
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="d-flex justify-content-center gap-2">
+                        <a asp-action="Index" class="btn btn-light px-4">Anuluj</a>
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="bi bi-trash me-1"></i> Usuń Certyfikat
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

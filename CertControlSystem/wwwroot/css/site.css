@@ -1,31 +1,58 @@
-html {
-  font-size: 14px;
+/* Nowoczesne karty */
+.card-modern {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    background-color: white;
+    transition: transform 0.2s;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/* Tabela */
+.table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    color: #6c757d;
+    border-top: none;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.table td {
+    vertical-align: middle;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+/* Animacja wejœcia strony */
+.fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
 }
 
-body {
-  margin-bottom: 60px;
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Badges (Statusy) */
+.badge-status {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.8rem;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* Przyciski akcji w tabeli */
+.btn-icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    margin-right: 4px;
 }

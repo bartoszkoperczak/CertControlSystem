@@ -1,0 +1,49 @@
+﻿@model CertControlSystem.Models.CertificateType
+
+@{
+    ViewData["Title"] = "Edycja Typu";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card card-modern shadow-sm border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Edytuj Typ Certyfikatu</h4>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-bold">Nazwa Szkolenia</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="DefaultValidityMonths" class="form-label fw-bold">Domyślna Ważność</label>
+                        <div class="input-group">
+                            <input asp-for="DefaultValidityMonths" class="form-control" type="number" />
+                            <span class="input-group-text">miesięcy</span>
+                        </div>
+                        <span asp-validation-for="DefaultValidityMonths" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4">
+                        <a asp-action="Index" class="btn btn-light me-2">Anuluj</a>
+                        <button type="submit" class="btn btn-warning px-4">
+                            <i class="bi bi-check-lg me-1"></i> Zapisz Zmiany
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
