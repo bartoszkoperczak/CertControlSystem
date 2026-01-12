@@ -68,7 +68,7 @@ SQL Server (LocalDB lub pełna instancja)
 # Krok 1: Klonowanie repozytorium
 Bash
 
-git clone [https://github.com/TwojLogin/CertControlSystem.git](https://github.com/TwojLogin/CertControlSystem.git)
+git clone [https://github.com/bartoszkoperczak/CertControlSystem.git]
 cd CertControlSystem
 
 # Krok 2: Konfiguracja Bazy Danych

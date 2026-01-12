@@ -115,7 +115,7 @@ namespace CertControlSystem.BackgroundServices
                 {
                     //dla Gmaila : (Security -> 2FA -> App passwords)
                     await client.ConnectAsync("smtp.gmail.com", 587, false);
-                    await client.AuthenticateAsync("koperczakbartosz@gmail.com", "kihzbrrwporqbegc");
+                    await client.AuthenticateAsync("koperczakbartosz@gmail.com", "xxxx");
                     
                     //dla innego hosta
                     // await client.ConnectAsync("smtp.mail.pl", 587, false);
