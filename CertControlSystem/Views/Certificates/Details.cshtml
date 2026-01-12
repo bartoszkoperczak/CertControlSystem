@@ -1,0 +1,96 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model CertControlSystem.Models.Certificate
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    ViewData["Title"] = "Szczegóły Certyfikatu";
+
+    var daysTotal = (Model.ExpirationDate.ToDateTime(TimeOnly.MinValue) - Model.IssueDate.ToDateTime(TimeOnly.MinValue)).TotalDays;
+    var daysLeft = (Model.ExpirationDate.ToDateTime(TimeOnly.MinValue) - DateTime.Now).TotalDays;
+
+    //progress bar
+    var progress = 100 - (int)((daysLeft / daysTotal) * 100);
+    if (progress > 100) progress = 100;
+    if (progress < 0) progress = 0;
+
+    var progressClass = "bg-success";
+    if (daysLeft < 30) progressClass = "bg-warning";
+    if (daysLeft < 0) progressClass = "bg-danger";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card card-modern shadow-lg">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0 text-center">
+                <div class="mb-2">
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                        <i class="bi bi-file-earmark-check me-1"></i> ID: #@Model.Id
+                    </span>
+                </div>
+                <h2 class="fw-bold text-dark">@Model.Type.Name</h2>
+                <p class="text-muted">Certyfikat / Uprawnienie</p>
+            </div>
+
+            <div class="card-body p-5">
+
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="fw-bold small text-uppercase text-muted">Status ważności</span>
+                        <span class="fw-bold small @(daysLeft < 0 ? "text-danger" : "text-success")">
+                            @(daysLeft < 0 ? "Wygasł" : $"{Math.Ceiling(daysLeft)} dni do końca")
+                        </span>
+                    </div>
+                    <div class="progress" style="height: 10px; border-radius: 5px;">
+                        <div class="progress-bar @progressClass" role="progressbar" style="width: @progress%" aria-valuenow="@progress" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6 border-end-md">
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3"><i class="bi bi-person me-1"></i> Posiadacz</h6>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="avatar bg-light text-dark rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                                @Model.Client.FirstName.Substring(0, 1)@Model.Client.LastName.Substring(0, 1)
+                            </div>
+                            <div>
+                                <h5 class="mb-0 fw-bold">@Model.Client.FirstName @Model.Client.LastName</h5>
+                                <small class="text-muted">@Model.Client.Email</small>
+                            </div>
+                        </div>
+                        <a asp-controller="Clients" asp-action="Details" asp-route-id="@Model.ClientId" class="btn btn-sm btn-outline-primary">
+                            Zobacz profil klienta
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 ps-md-4">
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3"><i class="bi bi-calendar-event me-1"></i> Okres ważności</h6>
+
+                        <div class="mb-3">
+                            <label class="d-block text-muted small">Data Wystawienia</label>
+                            <span class="fs-5 fw-semibold">@Model.IssueDate.ToString("dd.MM.yyyy")</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="d-block text-muted small">Data Wygaśnięcia</label>
+                            <span class="fs-5 fw-bold @(daysLeft < 0 ? "text-danger" : "text-dark")">
+                                @Model.ExpirationDate.ToString("dd.MM.yyyy")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-footer bg-light p-3 d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left me-1"></i> Powrót</a>
+
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="btn-group">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="bi bi-pencil me-1"></i> Edytuj</a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger"><i class="bi bi-trash me-1"></i> Usuń</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

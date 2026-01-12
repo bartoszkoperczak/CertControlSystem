@@ -1,34 +1,54 @@
+using CertControlSystem.BackgroundServices;
 using CertControlSystem.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Dodaj to:
-builder.Services.AddDbContext<CertDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CertDbContext") 
-        ?? "Server=DESKTOP-3U0S9C4\\SQLEXPRESS;Database=CertDB;Trusted_Connection=True;TrustServerCertificate=True;"));
+//konfiguracja bazy danych
+var connectionString = builder.Configuration.GetConnectionString("CertDbContext")
+    ?? "Server=DESKTOP-3U0S9C4\\SQLEXPRESS;Database=CertDB;Trusted_Connection=True;TrustServerCertificate=True;";
 
-// Add services to the container.
+builder.Services.AddDbContext<CertDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+//obs³uga u¿ytkowników, ról i gotowych widoków logowania
+builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+})
+.AddEntityFrameworkStores<CertDbContext>();
+
+builder.Services.AddControllersWithViews();
+
 builder.Services.AddRazorPages();
+
+builder.Services.AddHostedService<NotificationWorker>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
-app.MapRazorPages()
-   .WithStaticAssets();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Certificates}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();

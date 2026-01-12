@@ -1,0 +1,49 @@
+﻿@model CertControlSystem.Models.CertificateType
+
+@{
+    ViewData["Title"] = "Nowy Typ Certyfikatu";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card card-modern shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-tag-fill me-2"></i>Nowy Typ Certyfikatu</h4>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-bold">Nazwa Szkolenia / Certyfikatu</label>
+                        <input asp-for="Name" class="form-control" placeholder="np. Uprawnienia SEP do 1kV" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="DefaultValidityMonths" class="form-label fw-bold">Domyślna Ważność (miesiące)</label>
+                        <div class="input-group">
+                            <input asp-for="DefaultValidityMonths" class="form-control" placeholder="np. 24" type="number" min="1" />
+                            <span class="input-group-text">miesięcy</span>
+                        </div>
+                        <span asp-validation-for="DefaultValidityMonths" class="text-danger"></span>
+                        <small class="text-muted">Ta wartość podpowie się automatycznie przy tworzeniu certyfikatu.</small>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4">
+                        <a asp-action="Index" class="btn btn-light me-2">Anuluj</a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-plus-lg me-1"></i> Utwórz Typ
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

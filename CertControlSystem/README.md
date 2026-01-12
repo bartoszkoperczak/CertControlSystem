@@ -1,156 +1,99 @@
-﻿# CertControlSystem
+﻿# CertControlSystem - System Zarządzania Certyfikatami i Uprawnieniami
 
-**System Zarządzania Certyfikatami** – aplikacja internetowa do obsługi pełnego cyklu życia certyfikatów pracowników i klientów.
+**CertControlSystem** to nowoczesna aplikacja webowa typu MVC służąca do ewidencji klientów oraz monitorowania ważności ich certyfikatów i uprawnień (np. BHP, SEP). System automatycznie dba o to, by żaden termin nie został przeoczony, wysyłając powiadomienia e-mail oraz SMS.
 
----
+## 🚀 Główne Funkcjonalności
 
-## Opis projektu
+### 1. Zarządzanie Klientami i Certyfikatami (CRUD)
+* Pełna obsługa bazy klientów (Dodawanie, Edycja, Usuwanie, Szczegóły).
+* Przypisywanie certyfikatów do klientów z wyborem typu szkolenia.
+* **Inteligentne formularze:** Automatyczne wyliczanie daty ważności na podstawie wybranego typu szkolenia.
 
-**CertControlSystem** to aplikacja webowa umożliwiająca centralne zarządzanie certyfikatami w organizacji. System pozwala na:
+### 2. Monitoring i Statusy
+* Wizualna prezentacja statusu certyfikatu (Aktywny/Wygasł/Wygasa wkrótce).
+* Kolorystyczne oznaczanie rekordów wymagających uwagi.
+* Pasek postępu (Progress Bar) w szczegółach certyfikatu.
 
-* rejestrowanie klientów (pracowników, kontrahentów),
-* przypisywanie certyfikatów do klientów,
-* monitorowanie dat ważności certyfikatów (np. BHP, SEP),
-* automatyczne powiadomienia Email/SMS o zbliżającym się wygaśnięciu,
-* prowadzenie dziennika wysłanych powiadomień.
+### 3. Automatyzacja (Worker Service)
+* Działająca w tle usługa **Windows Service / Linux Daemon**.
+* Codzienne sprawdzanie bazy danych pod kątem wygasających uprawnień.
+* Automatyczna wysyłka powiadomień **E-mail (SMTP)** na 30 i 90 dni przed upływem ważności.
 
-Projekt ma charakter **edukacyjny** i został stworzony w celu nauki ASP.NET Core, EF Core oraz architektury aplikacji webowych.
+### 4. Bezpieczeństwo i Dostęp
+* System logowania i rejestracji oparty o **ASP.NET Core Identity**.
+* Podział uprawnień:
+    * **Gość:** Tylko podgląd danych.
+    * **Zalogowany Użytkownik:** Pełna edycja, dodawanie i usuwanie danych oraz ręczne wysyłanie powiadomień.
 
----
-
-## Technologie
-
-* **Backend:** ASP.NET Core Razor Pages (.NET 10)
-* **Baza danych:** SQL Server
-* **ORM:** Entity Framework Core (Database-First)
-* **Procesy w tle:** `BackgroundService` (`IHostedService`)
-* **Powiadomienia:**
-
-  * Email (SMTP)
-  * SMS (integracja z zewnętrzną usługą)
-* **Frontend:** Razor Pages + Bootstrap 5
-* **Autoryzacja:** ASP.NET Core Identity
+### 5. API
+* Wystawiony endpoint REST API (`/api/certificatesapi`) zwracający listę certyfikatów w formacie JSON (dla zewnętrznych integracji).
 
 ---
 
-## Architektura katalogów
+## 🛠️ Stack Technologiczny
 
-```
+* **Framework:** .NET 8 (ASP.NET Core MVC)
+* **Baza danych:** Microsoft SQL Server (LocalDB / Production)
+* **ORM:** Entity Framework Core
+* **Frontend:** Razor Views, Bootstrap 5, JavaScript
+* **Komunikacja E-mail:** MailKit + MimeKit (Obsługa SMTP/Gmail)
+* **Zadania w tle:** Hosted Services (`IHostedService`)
+
+---
+
+## 📂 Struktura Projektu
+
+```text
 CertControlSystem/
-├── Pages/                 # Razor Pages (UI)
-├── Models/                # Klasy encji (scaffolded z EF Core)
-├── Services/              # Logika biznesowa, serwisy, BackgroundService
-├── wwwroot/               # Zasoby statyczne (CSS, JS, Bootstrap)
-├── SQL/                   # Skrypty SQL (tworzenie bazy)
-├── Program.cs             # Konfiguracja aplikacji
-├── appsettings.json       # Konfiguracja środowiska
-├── .gitignore
-└── README.md
-```
+├── BackgroundServices/  # Logika automatycznych powiadomień (Worker)
+├── Controllers/         # Kontrolery MVC oraz API
+├── Models/              # Encje bazy danych i DTO
+├── Views/               # Widoki Razor (UI aplikacji)
+│   ├── Certificates/    # Widoki certyfikatów
+│   ├── Clients/         # Widoki klientów
+│   └── Shared/          # Layout i partiale (menu, logowanie)
+├── wwwroot/             # Pliki statyczne (CSS, JS, Obrazki)
+├── Program.cs           # Konfiguracja Dependency Injection i Pipeline'u
+└── appsettings.json     # Konfiguracja bazy danych i logowania
 
----
+## ⚙️ Instrukcja Uruchomienia
+# Wymagania wstępne
+Visual Studio 2022 lub VS Code
 
-## Wymagania
+.NET SDK 8.0
 
-* Visual Studio 2022+ **lub** Visual Studio Code
-* .NET 10 SDK
-* SQL Server (LocalDB lub pełna instancja)
+SQL Server (LocalDB lub pełna instancja)
 
----
+# Krok 1: Klonowanie repozytorium
+Bash
 
-## Szybki start
-
-### 1️. Klonowanie repozytorium
-
-```bash
-git clone https://github.com/bartoszkoperczak/CertControlSystem.git
+git clone [https://github.com/TwojLogin/CertControlSystem.git](https://github.com/TwojLogin/CertControlSystem.git)
 cd CertControlSystem
-```
 
-### 2️. Konfiguracja bazy danych
+# Krok 2: Konfiguracja Bazy Danych
+W pliku appsettings.json upewnij się, że ConnectionStrings:CertDbContext wskazuje na Twój serwer SQL.
 
-1. Otwórz **SQL Server Management Studio**
-2. Uruchom skrypt:
+Metoda A: Entity Framework (Zalecana) Otwórz konsolę Package Manager Console i wpisz:
 
-```
-SQL/CreateDatabase.sql
-```
+**Update-Database**
 
-Skrypt utworzy bazę danych **CertDB** wraz z przykładowymi danymi.
+Metoda B: Skrypt SQL Jeśli wolisz utworzyć bazę ręcznie, w katalogu /Database znajduje się plik script.sql. Uruchom go w SQL Server Management Studio (SSMS).
 
-### 3️. Przywrócenie pakietów NuGet
+# Krok 3: Konfiguracja SMTP (E-mail)
+Aby system wysyłał prawdziwe maile, w plikach NotificationWorker.cs oraz CertificatesController.cs (metoda SendNotification) uzupełnij:
 
-```bash
-dotnet restore
-```
+Email nadawcy
 
-### 4️. Uruchomienie aplikacji
+Hasło aplikacji (App Password) - dla Gmaila wymagane włączenie 2FA.
 
-```bash
-dotnet run
-```
+# Krok 4: Uruchomienie
 
-Aplikacja będzie dostępna pod adresem:
-👉 `https://localhost:5001`
+**dotnet run**
 
----
+Aplikacja dostępna będzie pod adresem: https://localhost:7083 (lub podobnym).
 
-##  Struktura bazy danych
+## 📧 API Endpointy
+Pobranie wszystkich certyfikatów (JSON): GET /api/certificatesapi
 
-| Tabela             | Opis                                                                |
-| ------------------ | ------------------------------------------------------------------- |
-| `Clients`          | Klienci / pracownicy (Id, FirstName, LastName, Email, Phone)        |
-| `CertificateTypes` | Typy certyfikatów (Id, Name, DefaultValidityMonths)                 |
-| `Certificates`     | Certyfikaty (Id, ClientId, TypeId, IssueDate, Expiration, IsActive) |
-| `NotificationLogs` | Historia powiadomień (Id, CertificateId, Channel, SentDate, Status) |
-
----
-
-##  Główne funkcjonalności
-
-* Zarządzanie klientami (CRUD)
-* Zarządzanie certyfikatami (CRUD)
-* Powiązania certyfikatów z klientami i typami
-* Automatyczne powiadomienia o wygasających certyfikatach
-* Historia wysłanych powiadomień
-* REST API:
-
-  ```
-  GET /api/certificates
-  ```
-* Autoryzacja użytkowników (logowanie, role, ograniczenia dostępu)
-
----
-
-##  Konfiguracja powiadomień Email
-
-W pliku `appsettings.json` dodaj:
-
-```json
-"EmailSettings": {
-  "SmtpServer": "smtp.gmail.com",
-  "SmtpPort": 587,
-  "SenderEmail": "twoj-email@gmail.com",
-  "SenderPassword": "twoje-haslo-aplikacji",
-  "EnableSSL": true
-}
-```
-
->  **Uwaga:**
-> Dla Gmaila wymagane jest hasło aplikacji (App Password).
-
----
-
-##  Instalacja pakietów NuGet (przykład)
-
-```bash
-dotnet add package Microsoft.EntityFrameworkCore.SqlServer
-dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore
-dotnet add package MailKit
-```
-
----
-
-##  Kontakt
-
-* GitHub: [https://github.com/bartoszkoperczak/CertControlSystem](https://github.com/bartoszkoperczak/CertControlSystem)
+## 👤 Autor
+Bartosz Koperczak Projekt zaliczeniowy: Programowanie w ASP.NET / Programowanie Sieciowe

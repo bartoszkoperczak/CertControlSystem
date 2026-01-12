@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model CertControlSystem.Models.CertificateType
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    ViewData["Title"] = "Szczegóły Typu";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card card-modern shadow">
+            <div class="card-body p-5 text-center">
+
+                <div class="bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
+                    <i class="bi bi-bookmark-star fs-1"></i>
+                </div>
+
+                <h6 class="text-uppercase text-muted letter-spacing-2 mb-2">Typ Certyfikatu</h6>
+                <h2 class="fw-bold mb-4">@Model.Name</h2>
+
+                <div class="row justify-content-center mb-4">
+                    <div class="col-auto">
+                        <div class="border rounded p-3 bg-light">
+                            <small class="d-block text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Domyślna ważność</small>
+                            <span class="fs-4 fw-bold text-dark">@Model.DefaultValidityMonths</span> <span class="text-muted">miesięcy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-light border text-start d-flex align-items-center">
+                    <i class="bi bi-info-circle-fill text-info me-3 fs-4"></i>
+                    <small>Zmiana domyślnej ważności w tym miejscu nie wpłynie na już wystawione certyfikaty, a jedynie na te tworzone w przyszłości.</small>
+                </div>
+
+                <div class="d-flex justify-content-between mt-5">
+                    <a asp-action="Index" class="btn btn-light px-4"><i class="bi bi-arrow-left me-1"></i> Wróć</a>
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <div class="btn-group">
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning px-4"><i class="bi bi-pencil me-1"></i> Edytuj</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,14 +11,25 @@ public partial class Certificate
     [Key]
     public int Id { get; set; }
 
+    [Display(Name = "Klient")]
+    [Required(ErrorMessage = "Wybór klienta jest wymagany")]
     public int ClientId { get; set; }
 
+    [Display(Name = "Typ Certyfikatu")]
+    [Required(ErrorMessage = "Typ certyfikatu jest wymagany")]
     public int TypeId { get; set; }
 
+    [Display(Name = "Data Wystawienia")]
+    [Required(ErrorMessage = "Data wystawienia jest wymagana")]
+    [DataType(DataType.Date)]
     public DateOnly IssueDate { get; set; }
 
+    [Display(Name = "Data Ważności")]
+    [Required(ErrorMessage = "Data ważności jest wymagana")]
+    [DataType(DataType.Date)]
     public DateOnly ExpirationDate { get; set; }
 
+    [Display(Name = "Czy Aktywny?")]
     public bool IsActive { get; set; }
 
     [ForeignKey("ClientId")]

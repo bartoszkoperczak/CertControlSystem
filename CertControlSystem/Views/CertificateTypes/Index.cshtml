@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<CertControlSystem.Models.CertificateType>
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    ViewData["Title"] = "Typy Certyfikatów";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-0 text-gray-800">Typy Certyfikatów</h1>
+        <p class="text-muted small">Definicje dostępnych szkoleń i ich domyślna ważność.</p>
+    </div>
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="bi bi-tag-fill me-2"></i>Nowy Typ
+        </a>
+    }
+</div>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card card-modern h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-info bg-opacity-10 text-info rounded p-3 me-3">
+                            <i class="bi bi-patch-check fs-4"></i>
+                        </div>
+                        <h5 class="card-title mb-0 fw-bold">@item.Name</h5>
+                    </div>
+                    <p class="card-text text-muted">
+                        Domyślna ważność: <span class="fw-bold text-dark">@item.DefaultValidityMonths miesięcy</span>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0 d-flex justify-content-end pb-3">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light text-primary me-2">Szczegóły</a>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light text-warning me-2">Edytuj</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-light text-danger">Usuń</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

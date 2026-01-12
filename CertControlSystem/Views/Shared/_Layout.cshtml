@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CertSystem 2025</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/zephyr/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="bg-light">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Certificates" asp-action="Index">
+                    <i class="bi bi-shield-check"></i> CertSystem
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Certificates" asp-action="Index">
+                                <i class="bi bi-file-earmark-text"></i> Certyfikaty
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Clients" asp-action="Index">
+                                <i class="bi bi-people"></i> Klienci
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="CertificateTypes" asp-action="Index">
+                                <i class="bi bi-tags"></i> Typy certyfikatów
+                            </a>
+                        </li>
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-4 mb-5">
+        <main role="main" class="pb-3">
+            <div class="fade-in-up">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted bg-white mt-auto py-3 shadow-sm">
+        <div class="container text-center">
+            &copy; 2025 - CertControlSystem - System Zarządzania Certyfikatami
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
