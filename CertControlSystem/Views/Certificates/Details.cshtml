@@ -5,16 +5,14 @@
 @{
     ViewData["Title"] = "Szczegóły Certyfikatu";
 
-    // Logika wizualna
     var daysTotal = (Model.ExpirationDate.ToDateTime(TimeOnly.MinValue) - Model.IssueDate.ToDateTime(TimeOnly.MinValue)).TotalDays;
     var daysLeft = (Model.ExpirationDate.ToDateTime(TimeOnly.MinValue) - DateTime.Now).TotalDays;
 
-    // Procent paska postępu (ile czasu upłynęło)
+    //progress bar
     var progress = 100 - (int)((daysLeft / daysTotal) * 100);
     if (progress > 100) progress = 100;
     if (progress < 0) progress = 0;
 
-    // Kolor paska
     var progressClass = "bg-success";
     if (daysLeft < 30) progressClass = "bg-warning";
     if (daysLeft < 0) progressClass = "bg-danger";

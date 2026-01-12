@@ -61,28 +61,22 @@
     }
 
     <script>
-        // 1. Pobieramy słownik ważności z C# do JavaScriptu (zamieniamy na JSON)
         var typeValidities = @Html.Raw(System.Text.Json.JsonSerializer.Serialize((Dictionary<int, int>)ViewBag.TypeValidities));
 
-        // 2. Elementy DOM
         var typeSelect = document.getElementById("TypeIdSelect");
         var issueInput = document.getElementById("IssueDateInput");
         var expirationInput = document.getElementById("ExpirationDateInput");
 
-        // 3. Funkcja licząca datę
         function updateExpirationDate() {
             var selectedTypeId = typeSelect.value;
             var issueDateVal = issueInput.value;
 
-            // Sprawdzamy czy użytkownik wybrał Typ i Datę
             if (selectedTypeId && issueDateVal && typeValidities[selectedTypeId]) {
                 var monthsToAdd = typeValidities[selectedTypeId];
 
                 var date = new Date(issueDateVal);
-                // Dodajemy miesiące
                 date.setMonth(date.getMonth() + monthsToAdd);
 
-                // Formatowanie na YYYY-MM-DD
                 var day = ("0" + date.getDate()).slice(-2);
                 var month = ("0" + (date.getMonth() + 1)).slice(-2);
                 var year = date.getFullYear();
@@ -91,11 +85,9 @@
             }
         }
 
-        // 4. Podpinamy nasłuchiwanie zdarzeń
         typeSelect.addEventListener("change", updateExpirationDate);
         issueInput.addEventListener("change", updateExpirationDate);
 
-        // Wywołaj raz na starcie (gdyby coś było wybrane domyślnie)
         updateExpirationDate();
     </script>
 }

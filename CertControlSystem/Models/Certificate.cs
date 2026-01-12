@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations; // Ważne!
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +27,6 @@ public partial class Certificate
     [Display(Name = "Data Ważności")]
     [Required(ErrorMessage = "Data ważności jest wymagana")]
     [DataType(DataType.Date)]
-    // Opcjonalnie: własna walidacja daty, ale na razie Required wystarczy
     public DateOnly ExpirationDate { get; set; }
 
     [Display(Name = "Czy Aktywny?")]

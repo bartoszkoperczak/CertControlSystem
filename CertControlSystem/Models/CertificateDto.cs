@@ -1,6 +1,6 @@
 ﻿namespace CertControlSystem.Models
 {
-    // Ta klasa służy tylko do wysyłania czystych danych przez API
+    //klasa tylko do wysyłania czystych danych przez api
     public class CertificateDto
     {
         public int Id { get; set; }

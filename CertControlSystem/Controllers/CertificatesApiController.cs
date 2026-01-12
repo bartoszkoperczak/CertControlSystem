@@ -19,14 +19,14 @@ namespace CertControlSystem.Controllers.Api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CertificateDto>>> GetCertificates()
         {
-            // Pobieramy dane z bazy i "mapujemy" je na bezpieczny format DTO
+            // pobiera dane z bazy i mapuje je na bezpieczny format dto
             var certificates = await _context.Certificates
                 .Include(c => c.Client)
                 .Include(c => c.Type)
                 .Select(c => new CertificateDto
                 {
                     Id = c.Id,
-                    // Łączymy Imię i Nazwisko w jeden napis
+                    // laczymy imie i naziwsko w jeden string
                     ClientName = c.Client.FirstName + " " + c.Client.LastName,
                     TypeName = c.Type.Name,
                     IssueDate = c.IssueDate.ToString("yyyy-MM-dd"),
