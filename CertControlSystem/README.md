@@ -1,6 +1,6 @@
 ﻿# CertControlSystem - System Zarządzania Certyfikatami i Uprawnieniami
 
-**CertControlSystem** to nowoczesna aplikacja webowa typu MVC służąca do ewidencji klientów oraz monitorowania ważności ich certyfikatów i uprawnień (np. BHP, SEP). System automatycznie dba o to, by żaden termin nie został przeoczony, wysyłając powiadomienia e-mail oraz SMS.
+**CertControlSystem** to nowoczesna aplikacja webowa typu MVC służąca do ewidencji klientów oraz monitorowania ważności ich certyfikatów i uprawnień (np. BHP, SEP). System automatycznie dba o to, by żaden termin nie został przeoczony, wysyłając powiadomienia e-mail.
 
 ## 🚀 Główne Funkcjonalności
 
