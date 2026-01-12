@@ -55,6 +55,7 @@ CertControlSystem/
 ├── wwwroot/             # Pliki statyczne (CSS, JS, Obrazki)
 ├── Program.cs           # Konfiguracja Dependency Injection i Pipeline'u
 └── appsettings.json     # Konfiguracja bazy danych i logowania
+```
 
 ## ⚙️ Instrukcja Uruchomienia
 # Wymagania wstępne
