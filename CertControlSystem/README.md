@@ -55,6 +55,7 @@ CertControlSystem/
 ├── wwwroot/             # Pliki statyczne (CSS, JS, Obrazki)
 ├── Program.cs           # Konfiguracja Dependency Injection i Pipeline'u
 └── appsettings.json     # Konfiguracja bazy danych i logowania
+```
 
 ## ⚙️ Instrukcja Uruchomienia
 # Wymagania wstępne
@@ -67,7 +68,7 @@ SQL Server (LocalDB lub pełna instancja)
 # Krok 1: Klonowanie repozytorium
 Bash
 
-git clone [https://github.com/TwojLogin/CertControlSystem.git](https://github.com/TwojLogin/CertControlSystem.git)
+git clone [https://github.com/bartoszkoperczak/CertControlSystem.git]
 cd CertControlSystem
 
 # Krok 2: Konfiguracja Bazy Danych
