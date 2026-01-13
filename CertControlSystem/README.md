@@ -57,44 +57,95 @@ CertControlSystem/
 └── appsettings.json     # Konfiguracja bazy danych i logowania
 ```
 
-## ⚙️ Instrukcja Uruchomienia
-# Wymagania wstępne
-Visual Studio 2022 lub VS Code
+---
 
-.NET SDK 8.0
+## 📖 Dokumentacja
 
-SQL Server (LocalDB lub pełna instancja)
+### 1. Wymagania
 
-# Krok 1: Klonowanie repozytorium
-Bash
+- Visual Studio 2022 lub VS Code
+- .NET SDK 8.0
+- SQL Server (LocalDB lub pełna instancja)
+- Konto e-mail (np. Gmail) do wysyłki powiadomień
+
+### 2. Instalacja
+
+#### Krok 1: Klonowanie repozytorium
 
 git clone [https://github.com/bartoszkoperczak/CertControlSystem.git]
 cd CertControlSystem
 
-# Krok 2: Konfiguracja Bazy Danych
-W pliku appsettings.json upewnij się, że ConnectionStrings:CertDbContext wskazuje na Twój serwer SQL.
+#### Krok 2: Konfiguracja bazy danych
 
-Metoda A: Entity Framework (Zalecana) Otwórz konsolę Package Manager Console i wpisz:
+W pliku `appsettings.json` ustaw odpowiedni connection string w sekcji `ConnectionStrings:CertDbContext`, np.: "ConnectionStrings": { "CertDbContext": "Server=(localdb)\MSSQLLocalDB;Database=CertDB;Trusted_Connection=True;" }
 
-**Update-Database**
+##### Metoda A: Entity Framework (zalecana)
 
-Metoda B: Skrypt SQL Jeśli wolisz utworzyć bazę ręcznie, w katalogu /Database znajduje się plik script.sql. Uruchom go w SQL Server Management Studio (SSMS).
+W konsoli Package Manager Console: Update-Database
 
-# Krok 3: Konfiguracja SMTP (E-mail)
-Aby system wysyłał prawdziwe maile, w plikach NotificationWorker.cs oraz CertificatesController.cs (metoda SendNotification) uzupełnij:
+##### Metoda B: Skrypt SQL
 
-Email nadawcy
+W katalogu `/Database` znajduje się plik `script.sql`. Uruchom go w SQL Server Management Studio (SSMS).
 
-Hasło aplikacji (App Password) - dla Gmaila wymagane włączenie 2FA.
+#### Krok 3: Konfiguracja SMTP (E-mail)
 
-# Krok 4: Uruchomienie
+Aby system wysyłał prawdziwe maile, w plikach `NotificationWorker.cs` oraz `CertificatesController.cs` (metoda `SendNotification`) uzupełnij:
 
-**dotnet run**
+- Adres e-mail nadawcy (np. `test@gmail.com`)
+- Hasło aplikacji (App Password) – dla Gmaila wymagane włączenie 2FA i wygenerowanie hasła aplikacji
 
-Aplikacja dostępna będzie pod adresem: https://localhost:7083 (lub podobnym).
+#### Krok 4: Uruchomienie aplikacji
+
+dotnet run
+
+Aplikacja będzie dostępna pod adresem: `https://localhost:7083` (lub innym wskazanym w konsoli).
+
+---
+
+### 3. Testowi użytkownicy i hasła
+
+Po pierwszym uruchomieniu możesz zarejestrować użytkownika przez formularz rejestracji.  
+Aby dodać domyślnego użytkownika (np. `Admin`), możesz dodać kod seedujący w pliku `Program.cs` lub ręcznie utworzyć konto przez UI.
+
+**Przykładowy użytkownik:**
+- Login: `admin@certcontrol.local`
+- Hasło: `Test123!`  
+(Uwaga: Jeśli nie istnieje, zarejestruj ręcznie.)
+
+---
+
+### 4. Konfiguracja
+
+- **Łańcuch połączenia z bazą:**  
+  Plik: `appsettings.json`, klucz: `ConnectionStrings:CertDbContext`
+- **SMTP:**  
+  Pliki: `NotificationWorker.cs`, `CertificatesController.cs` – uzupełnij dane logowania do SMTP
+- **Port aplikacji:**  
+  Domyślnie 7083 (możesz zmienić w `launchSettings.json`)
+
+---
+
+### 5. Opis działania aplikacji z punktu widzenia użytkownika
+
+- **Gość** (niezalogowany):  
+  Może przeglądać listę certyfikatów i klientów, ale nie może edytować ani dodawać danych.
+- **Zalogowany użytkownik:**  
+  Ma pełny dostęp do funkcji CRUD (dodawanie, edycja, usuwanie klientów i certyfikatów), może ręcznie wysyłać powiadomienia e-mail.
+- **Automatyczne powiadomienia:**  
+  System codziennie sprawdza certyfikaty wygasające za 30 i 90 dni i wysyła powiadomienia e-mail/SMS do klientów.
+- **API:**  
+  Dostępny jest endpoint `/api/certificatesapi`, który zwraca listę certyfikatów w formacie JSON – można go użyć do integracji z zewnętrznymi systemami lub serwisami powiadomień.
+
+---
 
 ## 📧 API Endpointy
-Pobranie wszystkich certyfikatów (JSON): GET /api/certificatesapi
+
+- Pobranie wszystkich certyfikatów (JSON):  
+  `GET /api/certificatesapi`
+
+---
 
 ## 👤 Autor
-Bartosz Koperczak Projekt zaliczeniowy: Programowanie w ASP.NET / Programowanie Sieciowe
+
+Bartosz Koperczak
+```
