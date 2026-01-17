@@ -1,6 +1,6 @@
 # CertControlSystem - System Zarządzania Certyfikatami i Uprawnieniami
 
-**CertControlSystem** to nowoczesna aplikacja webowa typu MVC służąca do ewidencji klientów oraz monitorowania ważności ich certyfikatów i uprawnień (np. BHP, SEP). System automatycznie dba o to, by żaden termin nie został przeoczony, wysyłając powiadomienia e-mail.
+**CertControlSystem** to nowoczesna aplikacja webowa typu MVC służąca do ewidencji klientów oraz monitorowania ważności ich certyfikatów i uprawnień (np. BHP, SEP). System automatycznie dba o to, by żaden termin nie został przeoczony, wysyłając powiadomienia e-mail i sms.
 
 ## 🚀 Główne Funkcjonalności
 
@@ -17,7 +17,7 @@
 ### 3. Automatyzacja (Worker Service)
 * Działająca w tle usługa **Windows Service / Linux Daemon**.
 * Codzienne sprawdzanie bazy danych pod kątem wygasających uprawnień.
-* Automatyczna wysyłka powiadomień **E-mail (SMTP)** na 30 i 90 dni przed upływem ważności.
+* Automatyczna wysyłka powiadomień **E-mail (SMTP)** i **SMS (smsapi.pl) na 30 i 90 dni przed upływem ważności.
 
 ### 4. Bezpieczeństwo i Dostęp
 * System logowania i rejestracji oparty o **ASP.NET Core Identity**.
@@ -37,6 +37,7 @@
 * **ORM:** Entity Framework Core
 * **Frontend:** Razor Views, Bootstrap 5, JavaScript
 * **Komunikacja E-mail:** MailKit + MimeKit (Obsługa SMTP/Gmail)
+* **Komunikacja SMS:** SMSAPI.pl (REST API)
 * **Zadania w tle:** Hosted Services (`IHostedService`)
 
 ---
@@ -67,6 +68,7 @@ CertControlSystem/
 - .NET SDK 8.0
 - SQL Server (LocalDB lub pełna instancja)
 - Konto e-mail (np. Gmail) do wysyłki powiadomień
+- Konto na smsapi.pl do wysyłki SMSów (opcjonalnie)
 
 ### 2. Instalacja
 
@@ -87,12 +89,14 @@ W konsoli Package Manager Console: Update-Database
 
 W katalogu `/Database` znajduje się plik `script.sql`. Uruchom go w SQL Server Management Studio (SSMS).
 
-#### Krok 3: Konfiguracja SMTP (E-mail)
+#### Krok 3: Konfiguracja SMTP (E-mail) && Konfiguracja SMS Api
 
 Aby system wysyłał prawdziwe maile, w plikach `NotificationWorker.cs` oraz `CertificatesController.cs` (metoda `SendNotification`) uzupełnij:
 
 - Adres e-mail nadawcy (np. `test@gmail.com`)
 - Hasło aplikacji (App Password) – dla Gmaila wymagane włączenie 2FA i wygenerowanie hasła aplikacji
+
+Analogicznie, jeśli chcesz wysyłać SMSy, uzupełnij token z smsapi.pl w plikach `NotificationWorker.cs` oraz `CertificatesController.cs` w sekcji SMS Api.
 
 #### Krok 4: Uruchomienie aplikacji
 
@@ -140,12 +144,14 @@ Aby dodać domyślnego użytkownika (np. `Admin`), możesz dodać kod seedujący
 
 ## 📧 API Endpointy
 
-- Pobranie wszystkich certyfikatów (JSON):  
+- Pełna obsługa API CRUD (JSON):  
   `GET /api/certificatesapi`
-
+- `POST /api/certificatesapi`
+  `DELETE /api/certificatesapi`
+- `POST /api/certificatesapi`
 ---
 
 ## 👤 Autor
 
-Bartosz Koperczak
+Bartosz Koperczak, Mateusz Porzycki, Krystian Pyś
 ```
