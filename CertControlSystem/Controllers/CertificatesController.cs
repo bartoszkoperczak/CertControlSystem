@@ -246,6 +246,71 @@ namespace CertControlSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize]
+        public async Task<IActionResult> SendSms(int id)
+        {
+            var cert = await _context.Certificates
+                .Include(c => c.Client)
+                .Include(c => c.Type)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (cert == null)
+                return NotFound();
+
+            if (string.IsNullOrEmpty(cert.Client.PhoneNumber))
+            {
+                TempData["Error"] = "Ten klient nie ma numeru telefonu!";
+                return RedirectToAction(nameof(Index));
+            }
+
+            string token = "";
+            string url = "https://api.smsapi.pl/sms.do";
+            string message = $"Dzien dobry {cert.Client.FirstName}! Przypominamy, ze Twoj certyfikat '{cert.Type.Name}' traci waznosc dnia {cert.ExpirationDate}. Prosimy o kontakt w celu odnowienia.";
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var values = new Dictionary<string, string>
+            {
+                { "access_token", token },
+                { "to", cert.Client.PhoneNumber },
+                { "message", message },
+                { "format", "json" }
+            };
+
+                    var content = new FormUrlEncodedContent(values);
+                    var response = await client.PostAsync(url, content);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        var error = await response.Content.ReadAsStringAsync();
+                        TempData["Error"] = $"Błąd SMSAPI: {error}";
+                    }
+                    else
+                    {
+                        _context.NotificationLogs.Add(new NotificationLog
+                        {
+                            CertificateId = cert.Id,
+                            Channel = "SMS (Ręczny)",
+                            SentDate = DateTime.Now,
+                            MessageContent = "Ręczne powiadomienie SMS przez Admina",
+                            Status = "Wysłano"
+                        });
+                        await _context.SaveChangesAsync();
+
+                        TempData["Success"] = "Pomyślnie wysłano SMS!";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Błąd wysyłki SMS: {ex.Message}";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private bool CertificateExists(int id)
         {
             return _context.Certificates.Any(e => e.Id == id);
