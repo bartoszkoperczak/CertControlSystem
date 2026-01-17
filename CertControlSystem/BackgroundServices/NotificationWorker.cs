@@ -71,14 +71,13 @@ namespace CertControlSystem.BackgroundServices
 
                 if (!alreadySent)
                 {
-                    string message = $"Dzień dobry {cert.Client.FirstName}! Przypominamy, że Twój certyfikat '{cert.Type.Name}' traci ważność dnia {cert.ExpirationDate}. Prosimy o kontakt w celu odnowienia.";
+                    string message = $"Dzien dobry {cert.Client.FirstName}! Przypominamy, że Twoj certyfikat '{cert.Type.Name}' traci waznosc dnia {cert.ExpirationDate}. Prosimy o kontakt w celu odnowienia.";
                     
                     if (!string.IsNullOrEmpty(cert.Client.Email))
                     {
                         await SendRealEmailAsync(cert.Client.Email, "Ważne: Wygasający certyfikat", message);
                     }
                     
-                    //wysyłka sms to be implemented
                     if (!string.IsNullOrEmpty(cert.Client.PhoneNumber))
                     {
                         await SendSmsApiAsync(cert.Client.PhoneNumber, message);
@@ -134,38 +133,39 @@ namespace CertControlSystem.BackgroundServices
 
         private async Task SendSmsApiAsync(string phoneNumber, string message)
         {
-            //to add real sms sending in future
-
-            _logger.LogWarning($"[SMS] (Symulacja) Do: {phoneNumber}, Treść: {message}");
-
-            /*
             try
             {
-                string token = "token"; 
+                string token = "";
                 string url = "https://api.smsapi.pl/sms.do";
 
                 using (var client = new HttpClient())
                 {
                     var values = new Dictionary<string, string>
                     {
-                        { "auth_token", token },
+                        { "access_token", token },
                         { "to", phoneNumber },
                         { "message", message },
-                        { "from", "Eco" },
                         { "format", "json" }
                     };
 
                     var content = new FormUrlEncodedContent(values);
                     var response = await client.PostAsync(url, content);
-                    
-                    // Opcjonalnie sprawdź response.IsSuccessStatusCode
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        var error = await response.Content.ReadAsStringAsync();
+                        _logger.LogError($"Błąd SMSAPI: {error}");
+                    }
+                    else
+                    {
+                        _logger.LogInformation($"[SMSAPI] Wysłano SMS do: {phoneNumber}");
+                    }
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Błąd SMS: {ex.Message}");
             }
-            */
             
             await Task.CompletedTask;
         }
