@@ -220,7 +220,7 @@ namespace CertControlSystem.Controllers
                 {
                     await client.ConnectAsync("smtp.gmail.com", 587, false);
 
-                    await client.AuthenticateAsync("koperczakbartosz@gmail.com", "xxxx");
+                    await client.AuthenticateAsync("koperczakbartosz@gmail.com", "");
 
                     await client.SendAsync(message);
                     await client.DisconnectAsync(true);

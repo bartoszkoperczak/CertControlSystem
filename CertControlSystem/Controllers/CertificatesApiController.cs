@@ -1,6 +1,7 @@
 ﻿using CertControlSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace CertControlSystem.Controllers.Api
 {
@@ -65,23 +66,121 @@ namespace CertControlSystem.Controllers.Api
 
         // POST: api/certificatesapi
         [HttpPost]
-        public async Task<ActionResult<Certificate>> PostCertificate(Certificate certificate)
+        public async Task<ActionResult<CertificateDto>> PostCertificate([FromBody] CertificateCreateDto dto)
         {
-            certificate.IsActive = certificate.ExpirationDate >= DateOnly.FromDateTime(DateTime.Now);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!DateOnly.TryParseExact(dto.IssueDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var issueDate) ||
+                !DateOnly.TryParseExact(dto.ExpirationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var expirationDate))
+            {
+                return BadRequest(new { error = "Daty muszą mieć format yyyy-MM-dd" });
+            }
+
+            var client = await _context.Clients.FindAsync(dto.ClientId);
+            if (client == null)
+                return BadRequest(new { error = $"Klient o Id = {dto.ClientId} nie istnieje" });
+
+            int resolvedTypeId;
+            CertificateType? certificateType = null;
+
+            if (dto.TypeId.HasValue && dto.TypeId.Value > 0)
+            {
+                certificateType = await _context.CertificateTypes.FindAsync(dto.TypeId.Value);
+                if (certificateType == null)
+                    return BadRequest(new { error = $"Typ certyfikatu o Id = {dto.TypeId.Value} nie istnieje" });
+                resolvedTypeId = certificateType.Id;
+            }
+            else if (!string.IsNullOrWhiteSpace(dto.TypeName))
+            {
+                certificateType = await _context.CertificateTypes
+                    .FirstOrDefaultAsync(t => t.Name == dto.TypeName);
+                if (certificateType == null)
+                    return BadRequest(new { error = $"Typ certyfikatu o nazwie '{dto.TypeName}' nie istnieje" });
+                resolvedTypeId = certificateType.Id;
+            }
+            else
+            {
+                return BadRequest(new { error = "Należy podać TypeId lub TypeName" });
+            }
+
+            var certificate = new Certificate
+            {
+                ClientId = client.Id,
+                TypeId = resolvedTypeId,
+                IssueDate = issueDate,
+                ExpirationDate = expirationDate,
+                IsActive = expirationDate >= DateOnly.FromDateTime(DateTime.Now)
+            };
+
             _context.Certificates.Add(certificate);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetCertificate), new { id = certificate.Id }, certificate);
+            // zwracamy DTO w body
+            var resultDto = new CertificateDto
+            {
+                Id = certificate.Id,
+                ClientName = client.FirstName + " " + client.LastName,
+                TypeName = certificateType != null ? certificateType.Name : (await _context.CertificateTypes.FindAsync(certificate.TypeId))?.Name ?? string.Empty,
+                IssueDate = certificate.IssueDate.ToString("yyyy-MM-dd"),
+                ExpirationDate = certificate.ExpirationDate.ToString("yyyy-MM-dd"),
+                IsActive = certificate.IsActive
+            };
+
+            return CreatedAtAction(nameof(GetCertificate), new { id = certificate.Id }, resultDto);
         }
 
         // PUT: api/certificatesapi/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCertificate(int id, Certificate certificate)
+        public async Task<IActionResult> PutCertificate(int id, [FromBody] CertificateUpdateDto dto)
         {
-            if (id != certificate.Id)
-                return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            certificate.IsActive = certificate.ExpirationDate >= DateOnly.FromDateTime(DateTime.Now);
+            if (id != dto.Id)
+                return BadRequest(new { error = "Niezgodne Id w URL i body" });
+
+            if (!DateOnly.TryParseExact(dto.IssueDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var issueDate) ||
+                !DateOnly.TryParseExact(dto.ExpirationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var expirationDate))
+            {
+                return BadRequest(new { error = "Daty muszą mieć format yyyy-MM-dd" });
+            }
+
+            var client = await _context.Clients.FindAsync(dto.ClientId);
+            if (client == null)
+                return BadRequest(new { error = $"Klient o Id = {dto.ClientId} nie istnieje" });
+
+            int resolvedTypeId;
+            if (dto.TypeId.HasValue && dto.TypeId.Value > 0)
+            {
+                var certType = await _context.CertificateTypes.FindAsync(dto.TypeId.Value);
+                if (certType == null)
+                    return BadRequest(new { error = $"Typ certyfikatu o Id = {dto.TypeId.Value} nie istnieje" });
+                resolvedTypeId = certType.Id;
+            }
+            else if (!string.IsNullOrWhiteSpace(dto.TypeName))
+            {
+                var certType = await _context.CertificateTypes
+                    .FirstOrDefaultAsync(t => t.Name == dto.TypeName);
+                if (certType == null)
+                    return BadRequest(new { error = $"Typ certyfikatu o nazwie '{dto.TypeName}' nie istnieje" });
+                resolvedTypeId = certType.Id;
+            }
+            else
+            {
+                return BadRequest(new { error = "Należy podać TypeId lub TypeName" });
+            }
+
+            var certificate = new Certificate
+            {
+                Id = dto.Id,
+                ClientId = dto.ClientId,
+                TypeId = resolvedTypeId,
+                IssueDate = issueDate,
+                ExpirationDate = expirationDate,
+                IsActive = expirationDate >= DateOnly.FromDateTime(DateTime.Now)
+            };
+
             _context.Entry(certificate).State = EntityState.Modified;
 
             try
