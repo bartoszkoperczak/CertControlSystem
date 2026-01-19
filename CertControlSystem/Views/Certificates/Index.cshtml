@@ -107,6 +107,9 @@
                                     <a asp-action="SendNotification" asp-route-id="@item.Id" class="btn btn-light btn-icon text-info" title="Wyślij ręcznie przypomnienie email">
                                         <i class="bi bi-envelope-paper-fill"></i>
                                     </a>
+                                    <a asp-action="SendSms" asp-route-id="@item.Id" class="btn btn-light btn-icon text-info" title="Wyślij ręcznie przypomnienie SMS">
+                                        <i class="bi bi-chat-dots"></i>
+                                    </a>
                                 }
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-light btn-icon text-primary" title="Szczegóły">
                                     <i class="bi bi-eye"></i>
